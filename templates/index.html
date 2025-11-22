@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTP Protocol Implementation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>FTP Protocol Implementation</h1>
+            <p>Choose between Connection-Oriented and Connectionless FTP</p>
+        </header>
+        
+        <div class="protocol-cards">
+            <div class="card">
+                <h2>Connection-Oriented FTP</h2>
+                <p>Uses TCP sockets with acknowledgments and retransmission</p>
+                <ul>
+                    <li>Reliable file transfer</li>
+                    <li>100-byte chunks with ACKs</li>
+                    <li>Timeout and retransmission</li>
+                    <li>Guaranteed delivery</li>
+                </ul>
+                <a href="/connection-oriented" class="btn">Use Connection-Oriented FTP</a>
+            </div>
+            
+            <div class="card">
+                <h2>Connectionless FTP</h2>
+                <p>Uses UDP sockets without acknowledgments</p>
+                <ul>
+                    <li>Fast file transfer</li>
+                    <li>Line-by-line transmission</li>
+                    <li>No acknowledgments</li>
+                    <li>Best-effort delivery</li>
+                </ul>
+                <a href="/connectionless" class="btn">Use Connectionless FTP</a>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>About This Implementation</h3>
+            <p>This project demonstrates two different file transfer protocols:</p>
+            <ul>
+                <li><strong>Connection-Oriented:</strong> Uses TCP with reliable transmission, acknowledgments, and error recovery</li>
+                <li><strong>Connectionless:</strong> Uses UDP with fast, best-effort transmission without guarantees</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

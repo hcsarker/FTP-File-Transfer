@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connectionless FTP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Connectionless FTP</h1>
+            <a href="/" class="back-btn">← Back to Home</a>
+        </header>
+        
+        <div class="control-panel">
+            <h2>Server Control</h2>
+            <div class="server-controls">
+                <button id="startServer" class="btn btn-success">Start Server</button>
+                <button id="stopServer" class="btn btn-danger">Stop Server</button>
+                <span id="serverStatus" class="status">Server Stopped</span>
+            </div>
+        </div>
+        
+        <div class="file-transfer">
+            <h2>File Transfer</h2>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file">Select File to Transfer:</label>
+                    <input type="file" id="file" name="file" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send File</button>
+            </form>
+            <div id="transferResult" class="result"></div>
+        </div>
+        
+        <div class="file-list">
+            <h2>Received Files</h2>
+            <button id="refreshFiles" class="btn btn-secondary">Refresh List</button>
+            <div id="fileList" class="file-list-container"></div>
+        </div>
+        
+        <div class="protocol-info">
+            <h3>Protocol Details</h3>
+            <ul>
+                <li><strong>Socket Type:</strong> UDP (Datagram)</li>
+                <li><strong>Transmission Unit:</strong> Line by line</li>
+                <li><strong>Acknowledgment:</strong> None</li>
+                <li><strong>Timeout:</strong> None</li>
+                <li><strong>Retransmission:</strong> None</li>
+                <li><strong>Reliability:</strong> Best-effort</li>
+                <li><strong>Speed:</strong> Fast (no handshaking)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('startServer').addEventListener('click', function() {
+            fetch('/start_cl_server', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('serverStatus').textContent = data.status === 'success' ? 
+                        'Server Running on port 2122' : 'Error: ' + data.message;
+                    document.getElementById('serverStatus').className = data.status === 'success' ? 
+                        'status status-success' : 'status status-error';
+                });
+        });
+
+        document.getElementById('stopServer').addEventListener('click', function() {
+            fetch('/stop_cl_server', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('serverStatus').textContent = data.status === 'success' ? 
+                        'Server Stopped' : 'Error: ' + data.message;
+                    document.getElementById('serverStatus').className = data.status === 'success' ? 
+                        'status status-stopped' : 'status status-error';
+                });
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const resultDiv = document.getElementById('transferResult');
+            
+            resultDiv.innerHTML = '<div class="loading">Sending file...</div>';
+            
+            fetch('/send_cl_file', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultDiv.innerHTML = data.status === 'success' ? 
+                    `<div class="success">${data.message}</div>` : 
+                    `<div class="error">${data.message}</div>`;
+                refreshFileList();
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<div class="error">Error: ${error}</div>`;
+            });
+        });
+
+        document.getElementById('refreshFiles').addEventListener('click', refreshFileList);
+
+        function refreshFileList() {
+            fetch('/list_files')
+                .then(response => response.json())
+                .then(data => {
+                    const fileList = document.getElementById('fileList');
+                    const files = data.connectionless || [];
+                    
+                    if (files.length === 0) {
+                        fileList.innerHTML = '<p>No files received yet</p>';
+                    } else {
+                        fileList.innerHTML = '<ul>' + files.map(file => 
+                            `<li>${file}</li>`
+                        ).join('') + '</ul>';
+                    }
+                });
+        }
+
+        // Initial file list load
+        refreshFileList();
+    </script>
+</body>
+</html>

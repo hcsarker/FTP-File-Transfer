@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Results - FTP Protocol</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Transfer Results</h1>
+            <a href="/" class="back-btn">← Back to Home</a>
+        </header>
+
+        <div class="results-section">
+            <div class="result-card">
+                <h2>Transfer Summary</h2>
+                <div class="result-details">
+                    <div class="result-item">
+                        <strong>Protocol:</strong> 
+                        <span class="protocol-badge">{{ protocol_type }}</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>File Name:</strong> {{ filename }}
+                    </div>
+                    <div class="result-item">
+                        <strong>Status:</strong> 
+                        <span class="status-badge {{ 'success' if success else 'error' }}">
+                            {{ 'Success' if success else 'Failed' }}
+                        </span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Message:</strong> {{ message }}
+                    </div>
+                    {% if transfer_stats %}
+                    <div class="result-item">
+                        <strong>Transfer Time:</strong> {{ transfer_stats.time }} seconds
+                    </div>
+                    <div class="result-item">
+                        <strong>File Size:</strong> {{ transfer_stats.size }} bytes
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/{{ 'connection-oriented' if protocol_type == 'Connection-Oriented' else 'connectionless' }}" 
+                   class="btn btn-primary">
+                    Send Another File
+                </a>
+                <a href="/" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+
+        <div class="technical-details">
+            <h3>Technical Details</h3>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <h4>Protocol Used</h4>
+                    <p>{{ protocol_type }}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Socket Type</h4>
+                    <p>{{ 'TCP (Stream)' if protocol_type == 'Connection-Oriented' else 'UDP (Datagram)' }}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Reliability</h4>
+                    <p>{{ 'High (Guaranteed delivery)' if protocol_type == 'Connection-Oriented' else 'Best-effort' }}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Acknowledgments</h4>
+                    <p>{{ 'Required for each chunk' if protocol_type == 'Connection-Oriented' else 'None' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
