@@ -1,0 +1,33 @@
+{% set site_title = 'FTP Protocol Implementation' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block page_title %}{{ site_title }}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-body">
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/" class="brand">FTP<span>Lab</span></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/connection-oriented">Connection-Oriented</a></li>
+            <li><a href="/connectionless">Connectionless</a></li>
+            <li><a href="/list_files" class="files-link" data-nav-files>Files JSON</a></li>
+        </ul>
+    </nav>
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+        <p>© {{ 2025 }} FTP Protocol Demo • Built with Flask & Python Sockets</p>
+    </footer>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

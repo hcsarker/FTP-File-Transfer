@@ -1,29 +1,59 @@
 # FTP Protocol Implementation
 
-A Python project implementing both connection-oriented and connectionless file transfer protocols with a web interface.
+Welcome to the **FTP Protocol Implementation** project!  
+This Python-based solution brings together both connection-oriented and connectionless file transfer protocols, all accessible through a modern web interface.
 
-## Features
+---
 
-### Connection-Oriented FTP
-- Uses TCP sockets for reliable transmission
-- File divided into 100-byte chunks
-- Acknowledgments required for each chunk
-- Timeout and retransmission mechanism
-- Guaranteed delivery
+## 🚀 Features
 
-### Connectionless FTP
-- Uses UDP sockets for fast transmission
-- File transferred line by line
-- No acknowledgments or retransmissions
-- Best-effort delivery
+### 🔗 Connection-Oriented FTP (TCP)
+- **Reliable Transmission:** Utilizes TCP sockets for robust data transfer.
+- **Chunked File Transfer:** Files are split into 100-byte chunks for efficient handling.
+- **Acknowledgments:** Each chunk requires confirmation, ensuring data integrity.
+- **Timeout & Retransmission:** Automatic recovery from lost packets.
+- **Guaranteed Delivery:** Your files arrive safely, every time.
 
-## Installation
+### ⚡ Connectionless FTP (UDP)
+- **Fast Transmission:** Leverages UDP sockets for speed.
+- **Line-by-Line Transfer:** Files sent one line at a time.
+- **No Overhead:** No acknowledgments or retransmissions—just quick delivery.
+- **Best-Effort:** Ideal for scenarios where speed matters more than reliability.
 
-1. Clone the repository or create the project structure
-2. Install dependencies:
+---
+
+## 🛠️ Installation
+
+1. **Clone the repository** or set up your project directory.
+2. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
+   ```
 
-## RUN
+---
+
+## ▶️ Usage
+
+Start the application:
+```bash
 python app.py
-http://localhost:5000
+```
+Open your browser and visit: [http://localhost:5000](http://localhost:5000)
+
+---
+
+## 💡 Why Use This Project?
+
+- Learn the differences between TCP and UDP file transfers.
+- Experiment with real-world networking concepts.
+- Extend and customize for your own use cases.
+
+---
+
+## 📄 License
+
+This project is released under the MIT License.
+
+---
+
+Enjoy seamless file transfers and explore the world of network protocols!

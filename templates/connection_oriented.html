@@ -1,125 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connection-Oriented FTP</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Connection-Oriented FTP</h1>
-            <a href="/" class="back-btn">← Back to Home</a>
-        </header>
-        
-        <div class="control-panel">
-            <h2>Server Control</h2>
-            <div class="server-controls">
-                <button id="startServer" class="btn btn-success">Start Server</button>
-                <button id="stopServer" class="btn btn-danger">Stop Server</button>
-                <span id="serverStatus" class="status">Server Stopped</span>
-            </div>
-        </div>
-        
-        <div class="file-transfer">
-            <h2>File Transfer</h2>
-            <form id="uploadForm" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="file">Select File to Transfer:</label>
-                    <input type="file" id="file" name="file" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Send File</button>
-            </form>
-            <div id="transferResult" class="result"></div>
-        </div>
-        
-        <div class="file-list">
-            <h2>Received Files</h2>
-            <button id="refreshFiles" class="btn btn-secondary">Refresh List</button>
-            <div id="fileList" class="file-list-container"></div>
-        </div>
-        
-        <div class="protocol-info">
-            <h3>Protocol Details</h3>
-            <ul>
-                <li><strong>Socket Type:</strong> TCP (Stream)</li>
-                <li><strong>Chunk Size:</strong> 100 bytes</li>
-                <li><strong>Acknowledgment:</strong> Required for each chunk</li>
-                <li><strong>Timeout:</strong> 5 seconds</li>
-                <li><strong>Retransmission:</strong> Up to 3 retries</li>
-                <li><strong>Reliability:</strong> High (Guaranteed delivery)</li>
-            </ul>
-        </div>
+{% extends 'base.html' %}
+{% block page_title %}Connection-Oriented FTP{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1 class="page-title">Connection-Oriented (TCP)</h1>
+  <p class="page-sub">Reliable, acknowledged chunk transfer.</p>
+</section>
+
+<div class="layout-grid two-cols">
+  <div>
+    <div class="panel">
+      <h2 class="panel-title">Server Control</h2>
+      <div class="server-controls compact">
+        <button data-action="start" data-server="co" class="btn btn-success">Start</button>
+        <button data-action="stop" data-server="co" class="btn btn-danger">Stop</button>
+        <span id="serverStatus" class="status status-stopped">Stopped</span>
+      </div>
     </div>
 
-    <script>
-        document.getElementById('startServer').addEventListener('click', function() {
-            fetch('/start_co_server', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('serverStatus').textContent = data.status === 'success' ? 
-                        'Server Running on port 2121' : 'Error: ' + data.message;
-                    document.getElementById('serverStatus').className = data.status === 'success' ? 
-                        'status status-success' : 'status status-error';
-                });
-        });
+    <div class="panel">
+      <h2 class="panel-title">Send File</h2>
+      <form id="uploadForm" enctype="multipart/form-data" class="transfer-form">
+        <label class="file-drop">
+          <input type="file" name="file" id="file" required />
+          <span>Drop or select a file…</span>
+        </label>
+        <button type="submit" class="btn btn-primary">Send via TCP</button>
+      </form>
+      <div id="transferResult" class="result"></div>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h2 class="panel-title">Received Files</h2>
+      <div class="panel-actions">
+        <button id="refreshFiles" class="btn btn-secondary btn-sm">Refresh</button>
+      </div>
+      <div id="fileList" class="file-list-container"></div>
+    </div>
 
-        document.getElementById('stopServer').addEventListener('click', function() {
-            fetch('/stop_co_server', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('serverStatus').textContent = data.status === 'success' ? 
-                        'Server Stopped' : 'Error: ' + data.message;
-                    document.getElementById('serverStatus').className = data.status === 'success' ? 
-                        'status status-stopped' : 'status status-error';
-                });
-        });
+    <div class="panel info">
+      <h2 class="panel-title">Protocol Details</h2>
+      <ul class="details-list">
+        <li><strong>Socket:</strong> TCP Stream</li>
+        <li><strong>Chunk Size:</strong> 100 bytes</li>
+        <li><strong>Timeout:</strong> 5s</li>
+        <li><strong>Retries:</strong> 3 per chunk</li>
+        <li><strong>Guarantee:</strong> Ordered reliable delivery</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+const statusEl = document.getElementById('serverStatus');
+function updateStatus(type, msg){
+  statusEl.textContent = msg;
+  statusEl.className = 'status ' + (type === 'running' ? 'status-success' : type === 'error' ? 'status-error' : 'status-stopped');
+}
 
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const resultDiv = document.getElementById('transferResult');
-            
-            resultDiv.innerHTML = '<div class="loading">Sending file...</div>';
-            
-            fetch('/send_co_file', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                resultDiv.innerHTML = data.status === 'success' ? 
-                    `<div class="success">${data.message}</div>` : 
-                    `<div class="error">${data.message}</div>`;
-                refreshFileList();
-            })
-            .catch(error => {
-                resultDiv.innerHTML = `<div class="error">Error: ${error}</div>`;
-            });
-        });
+document.querySelector('[data-action="start"][data-server="co"]').addEventListener('click', () => {
+  fetch('/start_co_server',{method:'POST'}).then(r=>r.json()).then(d=>{
+    updateStatus(d.status==='success' ? 'running':'error', d.status==='success' ? 'Running (2121)' : 'Error: '+d.message);
+  });
+});
 
-        document.getElementById('refreshFiles').addEventListener('click', refreshFileList);
+document.querySelector('[data-action="stop"][data-server="co"]').addEventListener('click', () => {
+  fetch('/stop_co_server',{method:'POST'}).then(r=>r.json()).then(d=>{
+    updateStatus(d.status==='success' ? 'stopped':'error', d.status==='success' ? 'Stopped' : 'Error: '+d.message);
+  });
+});
 
-        function refreshFileList() {
-            fetch('/list_files')
-                .then(response => response.json())
-                .then(data => {
-                    const fileList = document.getElementById('fileList');
-                    const files = data.connection_oriented || [];
-                    
-                    if (files.length === 0) {
-                        fileList.innerHTML = '<p>No files received yet</p>';
-                    } else {
-                        fileList.innerHTML = '<ul>' + files.map(file => 
-                            `<li>${file}</li>`
-                        ).join('') + '</ul>';
-                    }
-                });
-        }
+document.getElementById('uploadForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const resultDiv = document.getElementById('transferResult');
+  resultDiv.innerHTML = '<div class="loading">Sending file...</div>';
+  fetch('/send_co_file',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{
+    resultDiv.innerHTML = d.status==='success'?`<div class='success'>${d.message}</div>`:`<div class='error'>${d.message}</div>`;
+    refreshFileList();
+  }).catch(err=>{
+    resultDiv.innerHTML = `<div class='error'>Error: ${err}</div>`;
+  });
+});
 
-        // Initial file list load
-        refreshFileList();
-    </script>
-</body>
-</html>
+document.getElementById('refreshFiles').addEventListener('click', refreshFileList);
+function refreshFileList(){
+  fetch('/list_files').then(r=>r.json()).then(d=>{
+    const fileList = document.getElementById('fileList');
+    const files = d.connection_oriented || [];
+    fileList.innerHTML = files.length?('<ul>'+files.map(f=>`<li>${f}</li>`).join('')+'</ul>'):'<p class="empty">No files yet.</p>';
+  });
+}
+refreshFileList();
+</script>
+{% endblock %}

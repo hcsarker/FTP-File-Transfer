@@ -1,52 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FTP Protocol Implementation</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>FTP Protocol Implementation</h1>
-            <p>Choose between Connection-Oriented and Connectionless FTP</p>
-        </header>
-        
-        <div class="protocol-cards">
-            <div class="card">
-                <h2>Connection-Oriented FTP</h2>
-                <p>Uses TCP sockets with acknowledgments and retransmission</p>
-                <ul>
-                    <li>Reliable file transfer</li>
-                    <li>100-byte chunks with ACKs</li>
-                    <li>Timeout and retransmission</li>
-                    <li>Guaranteed delivery</li>
-                </ul>
-                <a href="/connection-oriented" class="btn">Use Connection-Oriented FTP</a>
-            </div>
-            
-            <div class="card">
-                <h2>Connectionless FTP</h2>
-                <p>Uses UDP sockets without acknowledgments</p>
-                <ul>
-                    <li>Fast file transfer</li>
-                    <li>Line-by-line transmission</li>
-                    <li>No acknowledgments</li>
-                    <li>Best-effort delivery</li>
-                </ul>
-                <a href="/connectionless" class="btn">Use Connectionless FTP</a>
-            </div>
-        </div>
-        
-        <div class="info-section">
-            <h3>About This Implementation</h3>
-            <p>This project demonstrates two different file transfer protocols:</p>
-            <ul>
-                <li><strong>Connection-Oriented:</strong> Uses TCP with reliable transmission, acknowledgments, and error recovery</li>
-                <li><strong>Connectionless:</strong> Uses UDP with fast, best-effort transmission without guarantees</li>
-            </ul>
-        </div>
+{% extends 'base.html' %}
+{% block page_title %}FTP Protocol Implementation{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-text">
+    <h1 class="gradient-text">FTP Protocol Playground</h1>
+    <p class="lead">Compare reliable chunked TCP vs fast lightweight UDP transfers. Learn networking trade-offs hands-on.</p>
+    <div class="hero-actions">
+      <a href="/connection-oriented" class="btn btn-glow">Connection-Oriented (TCP)</a>
+      <a href="/connectionless" class="btn btn-outline">Connectionless (UDP)</a>
     </div>
-</body>
-</html>
+  </div>
+  <div class="hero-visual">
+    <div class="orbit">
+      <div class="planet"></div>
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cards-grid">
+  <article class="info-card">
+    <h2>Connection-Oriented (TCP)</h2>
+    <p class="dim">Reliability first. Sequenced 100-byte chunks acknowledged with retries.</p>
+    <ul class="features">
+      <li>Chunked transfer with ACK</li>
+      <li>Timeout & retransmission</li>
+      <li>Guaranteed ordering</li>
+      <li>Integrity focus</li>
+    </ul>
+    <a href="/connection-oriented" class="btn btn-primary w-full">Launch TCP Mode</a>
+  </article>
+  <article class="info-card">
+    <h2>Connectionless (UDP)</h2>
+    <p class="dim">Speed prioritized. Fire-and-forget line packets for rapid movement.</p>
+    <ul class="features">
+      <li>No handshake overhead</li>
+      <li>Best-effort arrival</li>
+      <li>Low latency</li>
+      <li>Great for logs</li>
+    </ul>
+    <a href="/connectionless" class="btn btn-secondary w-full">Launch UDP Mode</a>
+  </article>
+  <article class="info-card highlight">
+    <h2>Side-by-Side Learning</h2>
+    <p class="dim">Use both modes to understand reliability vs performance engineering decisions.</p>
+    <div class="stats">
+      <div class="stat"><span>2</span><label>Protocols</label></div>
+      <div class="stat"><span>100B</span><label>Chunk Size</label></div>
+      <div class="stat"><span>5s</span><label>Timeout</label></div>
+    </div>
+  </article>
+</section>
+
+<section class="about">
+  <h3>Protocol Concepts</h3>
+  <div class="about-grid">
+    <div class="about-item">
+      <h4>Reliable Path</h4>
+      <p>TCP ensures ordered, retransmitted delivery suited for critical file integrity.</p>
+    </div>
+    <div class="about-item">
+      <h4>Fast Path</h4>
+      <p>UDP sacrifices reliability for speed making it ideal for non-critical streaming metrics.</p>
+    </div>
+    <div class="about-item">
+      <h4>Experiment</h4>
+      <p>Send different file sizes and compare transfer speed and guarantees.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

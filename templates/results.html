@@ -1,79 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transfer Results - FTP Protocol</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>Transfer Results</h1>
-            <a href="/" class="back-btn">← Back to Home</a>
-        </header>
+{% extends 'base.html' %}
+{% block page_title %}Transfer Results{% endblock %}
+{% block content %}
+<section class="page-header">
+  <h1 class="page-title">Transfer Summary</h1>
+  <p class="page-sub">Outcome details for your recent file operation.</p>
+</section>
 
-        <div class="results-section">
-            <div class="result-card">
-                <h2>Transfer Summary</h2>
-                <div class="result-details">
-                    <div class="result-item">
-                        <strong>Protocol:</strong> 
-                        <span class="protocol-badge">{{ protocol_type }}</span>
-                    </div>
-                    <div class="result-item">
-                        <strong>File Name:</strong> {{ filename }}
-                    </div>
-                    <div class="result-item">
-                        <strong>Status:</strong> 
-                        <span class="status-badge {{ 'success' if success else 'error' }}">
-                            {{ 'Success' if success else 'Failed' }}
-                        </span>
-                    </div>
-                    <div class="result-item">
-                        <strong>Message:</strong> {{ message }}
-                    </div>
-                    {% if transfer_stats %}
-                    <div class="result-item">
-                        <strong>Transfer Time:</strong> {{ transfer_stats.time }} seconds
-                    </div>
-                    <div class="result-item">
-                        <strong>File Size:</strong> {{ transfer_stats.size }} bytes
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <a href="/{{ 'connection-oriented' if protocol_type == 'Connection-Oriented' else 'connectionless' }}" 
-                   class="btn btn-primary">
-                    Send Another File
-                </a>
-                <a href="/" class="btn btn-secondary">Back to Home</a>
-            </div>
-        </div>
-
-        <div class="technical-details">
-            <h3>Technical Details</h3>
-            <div class="details-grid">
-                <div class="detail-item">
-                    <h4>Protocol Used</h4>
-                    <p>{{ protocol_type }}</p>
-                </div>
-                <div class="detail-item">
-                    <h4>Socket Type</h4>
-                    <p>{{ 'TCP (Stream)' if protocol_type == 'Connection-Oriented' else 'UDP (Datagram)' }}</p>
-                </div>
-                <div class="detail-item">
-                    <h4>Reliability</h4>
-                    <p>{{ 'High (Guaranteed delivery)' if protocol_type == 'Connection-Oriented' else 'Best-effort' }}</p>
-                </div>
-                <div class="detail-item">
-                    <h4>Acknowledgments</h4>
-                    <p>{{ 'Required for each chunk' if protocol_type == 'Connection-Oriented' else 'None' }}</p>
-                </div>
-            </div>
-        </div>
+<div class="results-grid">
+  <div class="panel result-card">
+    <h2 class="panel-title">Status</h2>
+    <div class="summary-rows">
+      <div class="row"><label>Protocol:</label><span class="badge">{{ protocol_type }}</span></div>
+      <div class="row"><label>File Name:</label><span>{{ filename }}</span></div>
+      <div class="row"><label>Result:</label><span class="badge {{ 'ok' if success else 'fail' }}">{{ 'Success' if success else 'Failed' }}</span></div>
+      <div class="row"><label>Message:</label><span>{{ message }}</span></div>
+      {% if transfer_stats %}
+      <div class="row"><label>Transfer Time:</label><span>{{ transfer_stats.time }} s</span></div>
+      <div class="row"><label>Size:</label><span>{{ transfer_stats.size }} bytes</span></div>
+      {% endif %}
     </div>
-</body>
-</html>
+    <div class="actions-row">
+      <a href="/{{ 'connection-oriented' if protocol_type == 'Connection-Oriented' else 'connectionless' }}" class="btn btn-primary">Send Another</a>
+      <a href="/" class="btn btn-secondary">Home</a>
+    </div>
+  </div>
+  <div class="panel tech-card">
+    <h2 class="panel-title">Technical</h2>
+    <div class="details-grid">
+      <div class="detail"><h4>Socket Type</h4><p>{{ 'TCP Stream' if protocol_type == 'Connection-Oriented' else 'UDP Datagram' }}</p></div>
+      <div class="detail"><h4>Reliability</h4><p>{{ 'Guaranteed Delivery' if protocol_type == 'Connection-Oriented' else 'Best-effort' }}</p></div>
+      <div class="detail"><h4>Acknowledgments</h4><p>{{ 'Per Chunk ACK' if protocol_type == 'Connection-Oriented' else 'None' }}</p></div>
+      <div class="detail"><h4>Use Case</h4><p>{{ 'Integrity-critical files' if protocol_type == 'Connection-Oriented' else 'Telemetry / logs' }}</p></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify, send_file
+from werkzeug.utils import secure_filename
 import threading
 import os
 import time
@@ -99,8 +100,9 @@ def send_co_file():
         if file.filename == '':
             return jsonify({'status': 'error', 'message': 'No file selected'})
         
-        # Save uploaded file temporarily
-        temp_path = os.path.join('temp', file.filename)
+        # Sanitize and save uploaded file temporarily
+        safe_name = secure_filename(file.filename)
+        temp_path = os.path.join('temp', safe_name)
         if not os.path.exists('temp'):
             os.makedirs('temp')
         file.save(temp_path)
@@ -115,7 +117,7 @@ def send_co_file():
         if success:
             return jsonify({
                 'status': 'success', 
-                'message': f'File {file.filename} sent successfully using connection-oriented FTP'
+                'message': f'File {safe_name} sent successfully using connection-oriented FTP'
             })
         else:
             return jsonify({'status': 'error', 'message': 'Failed to send file'})
@@ -133,8 +135,9 @@ def send_cl_file():
         if file.filename == '':
             return jsonify({'status': 'error', 'message': 'No file selected'})
         
-        # Save uploaded file temporarily
-        temp_path = os.path.join('temp', file.filename)
+        # Sanitize and save uploaded file temporarily
+        safe_name = secure_filename(file.filename)
+        temp_path = os.path.join('temp', safe_name)
         if not os.path.exists('temp'):
             os.makedirs('temp')
         file.save(temp_path)
@@ -149,7 +152,7 @@ def send_cl_file():
         if success:
             return jsonify({
                 'status': 'success', 
-                'message': f'File {file.filename} sent successfully using connectionless FTP'
+                'message': f'File {safe_name} sent successfully using connectionless FTP'
             })
         else:
             return jsonify({'status': 'error', 'message': 'Failed to send file'})
