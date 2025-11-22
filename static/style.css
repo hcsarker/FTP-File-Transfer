@@ -60,7 +60,8 @@ body.theme-light .gradient-text{background:linear-gradient(90deg,#6366f1,#0ea5e9
 body.theme-light .footer{color:#64748b;}
 body.theme-light a.footer-link{color:#0ea5e9;}
 /* 3. Body + Global Layout -------------------------------------------- */
-body.page-body{background:var(--bg-gradient);font-family:var(--font-body);color:var(--color-text-light);min-height:100vh;-webkit-font-smoothing:antialiased;}
+body.page-body{background:var(--bg-gradient);font-family:var(--font-body);color:var(--color-text-light);min-height:100vh;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+.main-container{flex:1;display:block;width:100%;}
 /* 4. Navbar ----------------------------------------------------------- */
 .navbar{display:flex;align-items:center;justify-content:space-between;padding:16px 42px;position:sticky;top:0;z-index:50;backdrop-filter:blur(var(--blur));background:rgba(17,24,39,.55);border-bottom:1px solid var(--panel-border);}
 .brand{font-size:1.35rem;font-weight:700;font-family:var(--font-title);color:var(--color-text-light);text-decoration:none;letter-spacing:.5px;}
@@ -137,6 +138,8 @@ body.page-body{background:var(--bg-gradient);font-family:var(--font-body);color:
 .file-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed rgba(255,255,255,.3);padding:26px;border-radius:var(--radius-lg);cursor:pointer;color:var(--color-text-dim);font-size:.85rem;transition:var(--transition);}
 .file-drop input{display:none;}
 .file-drop:hover{background:rgba(255,255,255,.06);border-color:var(--color-primary);color:#fff;}
+.file-drop.has-file{border-color:var(--color-success);background:rgba(16,185,129,.15);color:#fff;}
+.file-drop.has-file span{font-weight:600;}
 /* 12. Status Badges -------------------------------------------------- */
 .status{padding:6px 14px;border-radius:40px;font-size:.65rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
 .status-success{background:rgba(16,185,129,.18);color:#10b981;}

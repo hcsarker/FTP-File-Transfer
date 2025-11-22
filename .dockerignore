@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.git
+.gitignore
+Dockerfile
+README.md
+CONTRIBUTING.md
+uploads_connection_oriented/*
+uploads_connectionless/*
+temp/*
+# Exclude local virtualenvs
+venv/
+.env*/

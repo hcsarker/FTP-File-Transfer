@@ -34,15 +34,23 @@ This Python-based solution brings together both connection-oriented and connecti
 
 ---
 
-## ▶️ Usage
+## ▶️ Usage (Local Development)
 
-Start the application:
+Start the application (defaults to port 5000):
 
 ```bash
 python app.py
 ```
 
-Open your browser and visit: [http://localhost:5000](http://localhost:5000)
+Or override ports (web + TCP + UDP) and enable debug:
+
+```bash
+WEB_PORT=5050 CO_PORT=2525 CL_PORT=2424 FLASK_DEBUG=1 python app.py
+```
+
+Open your browser and visit: `http://localhost:<WEB_PORT>` (e.g. http://localhost:5050)
+
+Temporary files go in `temp/`; uploaded files land in `uploads_connection_oriented/` or `uploads_connectionless/`.
 
 ---
 
@@ -53,6 +61,52 @@ Open your browser and visit: [http://localhost:5000](http://localhost:5000)
 - Extend and customize for your own use cases.
 
 ---
+
+## 🐳 Deploy with Docker
+
+Build the image:
+
+```bash
+docker build -t ftp-transfer .
+```
+
+Run (mapping host port 8080 to container 5000):
+
+```bash
+docker run --rm -e WEB_PORT=5000 -e CO_PORT=2121 -e CL_PORT=2021 -p 8080:5000 ftp-transfer
+```
+
+Visit: http://localhost:8080
+
+Persist uploads with a volume:
+
+```bash
+docker run --rm \
+   -e WEB_PORT=5000 -p 8080:5000 \
+   -v $(pwd)/uploads_connection_oriented:/app/uploads_connection_oriented \
+   -v $(pwd)/uploads_connectionless:/app/uploads_connectionless \
+   ftp-transfer
+```
+
+### Reverse Proxy (Nginx snippet)
+
+```nginx
+location / {
+      proxy_pass http://127.0.0.1:8080;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+```
+
+Set `WEB_PORT` to the internal Flask port and let Nginx handle TLS.
+
+### Production Notes
+
+- Uses Gunicorn (3 workers, 4 threads). Tune for CPU cores.
+- Ensure proper file size limits at proxy layer if changing defaults.
+- Run health checks against `/`.
+- Add monitoring around chunk retransmission stats for TCP.
 
 ## 🤝 Contributing
 
@@ -75,3 +129,5 @@ Enjoy seamless file transfers and explore the world of network protocols!
 ---
 
 Made with ❤️ • Visit: https://cftechlab.hcsarker.me
+
+---

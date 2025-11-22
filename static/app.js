@@ -54,6 +54,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// File upload -------------------------------------------------------
 	const uploadForm = qs('#uploadForm');
+	const fileInput = qs('#file');
+	function resetDropLabel(){
+		if(!fileInput) return;
+		const lbl = fileInput.closest('.file-drop');
+		const span = lbl ? lbl.querySelector('span') : null;
+		if(span){
+			span.textContent = isTCPPage ? 'Drop or select a file…' : isUDPPage ? 'Drop or select a text file…' : 'Select a file';
+			lbl.classList.remove('has-file');
+		}
+	}
+	if(fileInput){
+		fileInput.addEventListener('change', () => {
+			const lbl = fileInput.closest('.file-drop');
+			const span = lbl ? lbl.querySelector('span') : null;
+			if(span){
+				if(fileInput.files && fileInput.files.length){
+					span.textContent = fileInput.files[0].name;
+					lbl.classList.add('has-file');
+				} else {
+					resetDropLabel();
+				}
+			}
+		});
+	}
 	if (uploadForm) {
 		uploadForm.addEventListener('submit', e => {
 			e.preventDefault();
@@ -69,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 							? `<div class="success">${data.message}</div>`
 							: `<div class="error">${data.message}</div>`;
 					}
+					if(data.status === 'success'){resetDropLabel(); if(uploadForm) uploadForm.reset();}
 					refreshFileList();
 				})
 				.catch(err => {
