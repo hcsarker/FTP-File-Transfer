@@ -8,6 +8,7 @@ This Python-based solution brings together both connection-oriented and connecti
 ## 🚀 Features
 
 ### 🔗 Connection-Oriented FTP (TCP)
+
 - **Reliable Transmission:** Utilizes TCP sockets for robust data transfer.
 - **Chunked File Transfer:** Files are split into 100-byte chunks for efficient handling.
 - **Acknowledgments:** Each chunk requires confirmation, ensuring data integrity.
@@ -15,6 +16,7 @@ This Python-based solution brings together both connection-oriented and connecti
 - **Guaranteed Delivery:** Your files arrive safely, every time.
 
 ### ⚡ Connectionless FTP (UDP)
+
 - **Fast Transmission:** Leverages UDP sockets for speed.
 - **Line-by-Line Transfer:** Files sent one line at a time.
 - **No Overhead:** No acknowledgments or retransmissions—just quick delivery.
@@ -35,9 +37,11 @@ This Python-based solution brings together both connection-oriented and connecti
 ## ▶️ Usage
 
 Start the application:
+
 ```bash
 python app.py
 ```
+
 Open your browser and visit: [http://localhost:5000](http://localhost:5000)
 
 ---
@@ -50,10 +54,24 @@ Open your browser and visit: [http://localhost:5000](http://localhost:5000)
 
 ---
 
+## 🤝 Contributing
+
+Contributions are welcome! Please see `CONTRIBUTING.md` for:
+
+- Setup & environment
+- Coding / UI style guidelines
+- Commit message conventions
+- Pull request checklist
+- Future improvement ideas
+
 ## 📄 License
 
-This project is released under the MIT License.
+This project is released under the MIT License. By submitting contributions you agree they are provided under the same license.
 
 ---
 
 Enjoy seamless file transfers and explore the world of network protocols!
+
+---
+
+Made with ❤️ • Visit: https://cftechlab.hcsarker.me

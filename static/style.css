@@ -42,6 +42,23 @@
 	--color-text-light:#f1f5f9;
 	--color-text-dim:#94a3b8;
 }
+/* Light theme overrides (applied via .theme-light on body) */
+body.theme-light {
+	--bg-gradient:linear-gradient(135deg,#f0f4f9 0%,#e2ecff 60%,#c9dbff 100%);
+	--panel-bg:rgba(255,255,255,0.85);
+	--panel-border:rgba(0,0,0,0.08);
+	--color-text-light:#1f2937;
+	--color-text-dim:#4b5563;
+	color:var(--color-text-light);
+	background:var(--bg-gradient);
+}
+body.theme-light .navbar {background:rgba(255,255,255,0.75);border-bottom:1px solid var(--panel-border);} 
+body.theme-light .info-card, body.theme-light .about-item, body.theme-light .panel {backdrop-filter:none;}
+body.theme-light .info-card{background:#ffffff;} body.theme-light .highlight{background:linear-gradient(135deg,#6366f1 0%,#0ea5e9 100%);color:#fff;}
+body.theme-light .features li{color:#475569;}
+body.theme-light .gradient-text{background:linear-gradient(90deg,#6366f1,#0ea5e9,#06b6d4);-webkit-background-clip:text;background-clip:text;color:transparent;}
+body.theme-light .footer{color:#64748b;}
+body.theme-light a.footer-link{color:#0ea5e9;}
 /* 3. Body + Global Layout -------------------------------------------- */
 body.page-body{background:var(--bg-gradient);font-family:var(--font-body);color:var(--color-text-light);min-height:100vh;-webkit-font-smoothing:antialiased;}
 /* 4. Navbar ----------------------------------------------------------- */
@@ -140,6 +157,8 @@ body.page-body{background:var(--bg-gradient);font-family:var(--font-body);color:
 .empty{font-size:.75rem;color:var(--color-text-dim);}
 /* 15. Footer ---------------------------------------------------------- */
 .footer{text-align:center;padding:30px 20px;color:var(--color-text-dim);font-size:.7rem;}
+.footer a.footer-link{text-decoration:none;font-weight:600;}
+.footer a.footer-link:hover{text-decoration:underline;}
 /* 16. Scrollbar (Optional aesthetic) --------------------------------- */
 ::-webkit-scrollbar{width:10px;}
 ::-webkit-scrollbar-track{background:#111827;}

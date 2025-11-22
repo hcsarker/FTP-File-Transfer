@@ -6,6 +6,11 @@ import time
 from connection_oriented_ftp import ConnectionOrientedFTPServer, ConnectionOrientedFTPClient
 from connectionless_ftp import ConnectionlessFTPServer, ConnectionlessFTPClient
 
+# Environment-configurable ports (fallback to defaults)
+WEB_PORT = int(os.getenv('WEB_PORT', '5000'))
+CO_PORT = int(os.getenv('CO_PORT', '2121'))
+CL_PORT = int(os.getenv('CL_PORT', '2122'))
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -17,13 +22,15 @@ co_server_thread = None
 cl_server_thread = None
 
 def start_connection_oriented_server():
+    """Start the TCP (connection-oriented) server on configured CO_PORT."""
     global co_server
-    co_server = ConnectionOrientedFTPServer(port=2121)
+    co_server = ConnectionOrientedFTPServer(port=CO_PORT)
     co_server.start_server('uploads_connection_oriented')
 
 def start_connectionless_server():
+    """Start the UDP (connectionless) server on configured CL_PORT."""
     global cl_server
-    cl_server = ConnectionlessFTPServer(port=2122)
+    cl_server = ConnectionlessFTPServer(port=CL_PORT)
     cl_server.start_server('uploads_connectionless')
 
 @app.route('/')
@@ -44,13 +51,13 @@ def start_co_server():
     try:
         if co_server_thread and co_server_thread.is_alive():
             return jsonify({'status': 'error', 'message': 'Server already running'})
-        
+
         co_server_thread = threading.Thread(target=start_connection_oriented_server)
         co_server_thread.daemon = True
         co_server_thread.start()
-        
+
         time.sleep(1)  # Give server time to start
-        return jsonify({'status': 'success', 'message': 'Connection-oriented server started on port 2121'})
+        return jsonify({'status': 'success', 'message': f'Connection-oriented server started on port {CO_PORT}'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
@@ -70,13 +77,13 @@ def start_cl_server():
     try:
         if cl_server_thread and cl_server_thread.is_alive():
             return jsonify({'status': 'error', 'message': 'Server already running'})
-        
+
         cl_server_thread = threading.Thread(target=start_connectionless_server)
         cl_server_thread.daemon = True
         cl_server_thread.start()
-        
+
         time.sleep(1)  # Give server time to start
-        return jsonify({'status': 'success', 'message': 'Connectionless server started on port 2122'})
+        return jsonify({'status': 'success', 'message': f'Connectionless server started on port {CL_PORT}'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
@@ -109,7 +116,7 @@ def send_co_file():
         
         # Send file using connection-oriented FTP
         client = ConnectionOrientedFTPClient()
-        success = client.send_file('localhost', 2121, temp_path)
+        success = client.send_file('localhost', CO_PORT, temp_path)
         
         # Clean up temp file
         os.remove(temp_path)
@@ -144,7 +151,7 @@ def send_cl_file():
         
         # Send file using connectionless FTP
         client = ConnectionlessFTPClient()
-        success = client.send_file('localhost', 2122, temp_path)
+        success = client.send_file('localhost', CL_PORT, temp_path)
         
         # Clean up temp file
         os.remove(temp_path)
@@ -184,5 +191,7 @@ if __name__ == '__main__':
     for dir_name in ['uploads_connection_oriented', 'uploads_connectionless', 'temp']:
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)
-    
-    app.run(debug=True, host='0.0.0.0', port=5000)
+
+    # Use production-friendly defaults when DEBUG env not set
+    debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
+    app.run(debug=debug_mode, host='0.0.0.0', port=WEB_PORT)
