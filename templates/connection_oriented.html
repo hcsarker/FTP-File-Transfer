@@ -51,47 +51,4 @@
   </div>
 </div>
 {% endblock %}
-{% block extra_js %}
-<script>
-const statusEl = document.getElementById('serverStatus');
-function updateStatus(type, msg){
-  statusEl.textContent = msg;
-  statusEl.className = 'status ' + (type === 'running' ? 'status-success' : type === 'error' ? 'status-error' : 'status-stopped');
-}
-
-document.querySelector('[data-action="start"][data-server="co"]').addEventListener('click', () => {
-  fetch('/start_co_server',{method:'POST'}).then(r=>r.json()).then(d=>{
-    updateStatus(d.status==='success' ? 'running':'error', d.status==='success' ? 'Running (2121)' : 'Error: '+d.message);
-  });
-});
-
-document.querySelector('[data-action="stop"][data-server="co"]').addEventListener('click', () => {
-  fetch('/stop_co_server',{method:'POST'}).then(r=>r.json()).then(d=>{
-    updateStatus(d.status==='success' ? 'stopped':'error', d.status==='success' ? 'Stopped' : 'Error: '+d.message);
-  });
-});
-
-document.getElementById('uploadForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const resultDiv = document.getElementById('transferResult');
-  resultDiv.innerHTML = '<div class="loading">Sending file...</div>';
-  fetch('/send_co_file',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{
-    resultDiv.innerHTML = d.status==='success'?`<div class='success'>${d.message}</div>`:`<div class='error'>${d.message}</div>`;
-    refreshFileList();
-  }).catch(err=>{
-    resultDiv.innerHTML = `<div class='error'>Error: ${err}</div>`;
-  });
-});
-
-document.getElementById('refreshFiles').addEventListener('click', refreshFileList);
-function refreshFileList(){
-  fetch('/list_files').then(r=>r.json()).then(d=>{
-    const fileList = document.getElementById('fileList');
-    const files = d.connection_oriented || [];
-    fileList.innerHTML = files.length?('<ul>'+files.map(f=>`<li>${f}</li>`).join('')+'</ul>'):'<p class="empty">No files yet.</p>';
-  });
-}
-refreshFileList();
-</script>
-{% endblock %}
+{% block extra_js %}{% endblock %}
