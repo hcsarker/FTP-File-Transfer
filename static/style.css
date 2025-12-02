@@ -140,6 +140,7 @@ body.page-body{background:var(--bg-gradient);font-family:var(--font-body);color:
 .footer{text-align:center;padding:30px 20px;color:var(--color-text-dim);font-size:.7rem;}
 .footer a.footer-link{text-decoration:none;font-weight:600;}
 .footer a.footer-link:hover{text-decoration:underline;}
+
 /* 16. Scrollbar (Optional aesthetic) --------------------------------- */
 ::-webkit-scrollbar{width:10px;}
 ::-webkit-scrollbar-track{background:#111827;}
