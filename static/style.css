@@ -1,25 +1,3 @@
-/* =====================================================================
-	FTP File Transfer UI Styles (Commented & Structured)
-	---------------------------------------------------------------------
-	Sections:
-	1. Reset
-	2. CSS Variables (Design Tokens)
-	3. Body + Global Layout
-	4. Navbar
-	5. Hero Section
-	6. Cards / Protocol Feature Blocks
-	7. About Section
-	8. Buttons
-	9. Panels (Forms & Info)
-	10. Details Lists
-	11. File Drop / Upload
-	12. Status Badges
-	13. Results View
-	14. File List Styling
-	15. Footer
-	16. Scrollbar (Optional)
-	17. Responsive Media Queries
-	===================================================================== */
 
 /* 1. Reset ----------------------------------------------------------- */
 *{margin:0;padding:0;box-sizing:border-box;}

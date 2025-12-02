@@ -1,13 +1,3 @@
-/* =====================================================================
-	 Global Frontend Logic for FTP File Transfer Demo
-	 ---------------------------------------------------------------------
-	 Responsibilities:
-	 - Server start/stop buttons (TCP & UDP)
-	 - File upload handling (detect page type by URL)
-	 - Refresh received file list
-	 - Minimal status badge updates
-	 - Shared utility helpers
-	 --------------------------------------------------------------------- */
 
 document.addEventListener('DOMContentLoaded', () => {
 	const path = window.location.pathname;
